@@ -8,6 +8,7 @@ type TaskReducerType =
     | UpdateTaskTypeACType
     | deleteTasksACType
     | AddNewTasksArrayACType
+    | SetLocalTasksType
 export const taskReducer = (state: TasksStateType, action: TaskReducerType): TasksStateType => {
     switch (action.type) {
         case 'REMOVE-TASK': {
@@ -40,12 +41,14 @@ export const taskReducer = (state: TasksStateType, action: TaskReducerType): Tas
             const copyState = {...state}
             delete copyState[action.payload.id]
             return copyState
-           // delete state[action.payload.id] //! сделать иммутабельно
-           // return {...state}
+            // delete state[action.payload.id] //! сделать иммутабельно
+            // return {...state}
         }
 
         case "ADD-NEW-ARRAY":
             return {...state, [action.payload.id]: []}
+
+        case "SET-TASKS": return action.payload.tasks
 
         default:
             return state
@@ -75,3 +78,6 @@ export const deleteTasksAC = (id: string) => ({type: 'DELETE-TASKS', payload: {i
 
 type AddNewTasksArrayACType = ReturnType<typeof addNewTasksArrayAC>
 export const addNewTasksArrayAC = (id: string) => ({type: 'ADD-NEW-ARRAY', payload: {id}} as const)
+
+type SetLocalTasksType = ReturnType<typeof setLocalTasksAC>
+export const setLocalTasksAC = (tasks: TasksStateType) => ({type: 'SET-TASKS', payload: {tasks}} as const)

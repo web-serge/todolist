@@ -1,6 +1,6 @@
-import {FilterValuesType, TodolistType} from '../App';
+import {FilterValuesType, TasksStateType, TodolistType} from '../App';
 
-type TodoListReducerType = RemoveTodolistACType | ChangeFilterType | addNewTodoListACType | RenameTodolistACType
+type TodoListReducerType = RemoveTodolistACType | ChangeFilterType | addNewTodoListACType | RenameTodolistACType | SetLocalTodoACType
 export const todoListReducer = (state: TodolistType[], action: TodoListReducerType): TodolistType[] => {
     switch (action.type) {
         case 'REMOVE-TODOLIST': {
@@ -15,6 +15,10 @@ export const todoListReducer = (state: TodolistType[], action: TodoListReducerTy
 
         case "RENAME-TODOLIST":
             return state.map(el => el.id === action.payload.id ? {...el, title: action.payload.newTitle} : el)
+
+        case "SET-TODO": {
+            return action.payload.todo
+        }
 
         default:
             return state
@@ -40,3 +44,7 @@ export const renameTodolistAC = (id: string, newTitle: string) => ({
     type: 'RENAME-TODOLIST',
     payload: {id, newTitle}
 } as const)
+
+
+type SetLocalTodoACType = ReturnType<typeof setLocalTodoAC>
+export const setLocalTodoAC = (todo: TodolistType[]) => ({type: 'SET-TODO', payload: {todo}} as const)

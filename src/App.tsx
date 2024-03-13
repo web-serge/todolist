@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from 'react';
+import React, {useEffect, useReducer} from 'react';
 import './App.css';
 import {TaskType, Todolist} from './Todolist';
 import {v1} from 'uuid';
@@ -8,7 +8,7 @@ import {
     addTaskAC,
     changeStatusAC,
     deleteTasksAC,
-    removeTaskAC,
+    removeTaskAC, setLocalTasksAC,
     taskReducer,
     updateTaskAC
 } from './reducers/task-reducer';
@@ -16,7 +16,7 @@ import {
     addNewTodoListAC,
     changeFilterAC,
     removeTodolistAC,
-    renameTodolistAC,
+    renameTodolistAC, setLocalTodoAC,
     todoListReducer
 } from './reducers/todoListReducer';
 
@@ -53,6 +53,22 @@ function App() {
             {id: v1(), title: "Meat", isDone: false},
         ]
     });
+//local storage
+    useEffect(() => {
+        const todo = localStorage.getItem('todoLists')
+        const taskItems = localStorage.getItem('tasks')
+
+        if (todo && taskItems) {
+            dispatchTodoLists(setLocalTodoAC(JSON.parse(todo)))
+            dispatchTasks(setLocalTasksAC(JSON.parse(taskItems)))
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('todoLists', JSON.stringify(todoLists))
+        localStorage.setItem('tasks', JSON.stringify(tasks))
+    }, [todoLists, tasks]);
+
 
 // dispatch task
     function removeTask(id: string, taskId: string) {
