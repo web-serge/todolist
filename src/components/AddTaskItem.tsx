@@ -4,6 +4,7 @@ import {ChangeEvent, KeyboardEvent, useState} from 'react';
 
 type AddTaskItemType = {
     onClick: (title: string) => void
+    placeholder?: string
 };
 export const AddTaskItem = (props: AddTaskItemType) => {
     let [title, setTitle] = useState("")
@@ -36,8 +37,9 @@ export const AddTaskItem = (props: AddTaskItemType) => {
                    onChange={onChangeHandler}
                    onKeyPress={onKeyPressHandler}
                    className={error ? "error" : ""}
+                   placeholder={props.placeholder}
             />
-            <button onClick={addTask}>+</button>
+            <button onClick={addTask}>➕</button>
             {error && <div className="error-message">{error}</div>}
         </div>
     );

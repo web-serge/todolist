@@ -5,8 +5,9 @@ import {ChangeEvent, useState} from 'react';
 type EditType = {
     oldTitle: string
     callBack: (newTitle: string) => void
+    className?: string
 };
-export const EditableSpan = ({oldTitle, callBack}: EditType) => {
+export const EditableSpan = ({oldTitle, callBack, className}: EditType) => {
     const [newTitle, setNewTitle] = useState(oldTitle)
     const [edit, setEdit] = useState<boolean>(false)
 
@@ -26,7 +27,7 @@ export const EditableSpan = ({oldTitle, callBack}: EditType) => {
                             autoFocus
                             value={newTitle}
                             onChange={onChangeHandler}/>}
-            {!edit && <span onDoubleClick={editHandler}>{oldTitle}</span>}
+            {!edit && <span onDoubleClick={editHandler} className={className}>{oldTitle}</span>}
         </>
     )
 };

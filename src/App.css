@@ -22,5 +22,12 @@
 
 .is-done {
   opacity: 0.5;
+  text-decoration: line-through;
+}
+
+button {
+  background: transparent;
+  border-color: transparent;
+  cursor: pointer;
 }
 
