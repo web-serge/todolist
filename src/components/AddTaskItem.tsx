@@ -1,6 +1,9 @@
 // @flow
 import * as React from 'react';
 import {ChangeEvent, KeyboardEvent, useState} from 'react';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import PostAddIcon from '@mui/icons-material/PostAdd';
 
 type AddTaskItemType = {
     onClick: (title: string) => void
@@ -32,14 +35,16 @@ export const AddTaskItem = (props: AddTaskItemType) => {
 
 
     return (
-        <div>
-            <input value={title}
-                   onChange={onChangeHandler}
-                   onKeyPress={onKeyPressHandler}
-                   className={error ? "error" : ""}
-                   placeholder={props.placeholder}
+        <div style={{padding: '10px 0'}}>
+            <TextField label={!!error ? 'ERROR' : props.placeholder} variant="outlined" size={'small'}
+                       value={title}
+                       onChange={onChangeHandler}
+                       onKeyPress={onKeyPressHandler}
+                       error={!!error}
             />
-            <button onClick={addTask}>➕</button>
+            <IconButton>
+                <PostAddIcon  onClick={addTask}/>
+            </IconButton>
             {error && <div className="error-message">{error}</div>}
         </div>
     );

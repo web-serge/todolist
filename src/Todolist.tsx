@@ -2,6 +2,12 @@ import React, {ChangeEvent} from 'react';
 import {FilterValuesType} from './App';
 import {AddTaskItem} from './components/AddTaskItem';
 import {EditableSpan} from './components/EditableSpan';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Checkbox from '@mui/material/Checkbox';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Paper from '@mui/material/Paper';
 
 export type TaskType = {
     id: string
@@ -53,35 +59,35 @@ export function Todolist(props: PropsType) {
         }
 
         return <li key={t.id}>
-            <label> <input type="checkbox" onChange={onChangeHandler} checked={t.isDone}/>
+            <label> <Checkbox onChange={onChangeHandler} checked={t.isDone} color={'warning'}/>
                 <EditableSpan oldTitle={t.title} callBack={update} className={t.isDone ? "is-done" : ""}/></label>
-            <button onClick={onClickHandler}>✘</button>
+            <IconButton onClick={onClickHandler} size='small' color='warning' disabled={!t.isDone}><DeleteIcon/> </IconButton>
         </li>
     })
 
 
-    return <div>
+    return <Paper elevation={3} style={{padding:'10px'}}>
         <h3>
             <EditableSpan oldTitle={props.title} callBack={updateTitle}/>
             <button onClick={removeTodolist}>❌</button>
         </h3>
         <AddTaskItem onClick={addTaskHandler} placeholder='Add new task'/>
-        <div>
-            <button className={props.filter === 'all' ? "active-filter" : ""}
+        <ButtonGroup>
+            <Button variant={props.filter === 'all' ? 'contained' : 'outlined'} size={'small'}
                     onClick={onAllClickHandler}>All
-            </button>
-            <button className={props.filter === 'active' ? "active-filter" : ""}
+            </Button>
+            <Button variant={props.filter === 'active' ? 'contained' : 'outlined'} size={'small'}
                     onClick={onActiveClickHandler}>Active
-            </button>
-            <button className={props.filter === 'completed' ? "active-filter" : ""}
+            </Button>
+            <Button variant={props.filter === 'completed' ? 'contained' : 'outlined'} size={'small'}
                     onClick={onCompletedClickHandler}>Completed
-            </button>
-        </div>
+            </Button>
+        </ButtonGroup>
         <ul>
             {mappingTasks}
         </ul>
 
-    </div>
+    </Paper>
 }
 
 

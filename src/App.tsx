@@ -19,6 +19,8 @@ import {
     renameTodolistAC, setLocalTodoAC,
     todoListReducer
 } from './reducers/todoListReducer';
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 export type FilterValuesType = "all" | "active" | "completed";
 export type TodolistType = {
@@ -34,7 +36,7 @@ function App() {
     let todolistId1 = v1();
     let todolistId2 = v1();
 
-    let [todoLists, dispatchTodoLists] = useReducer(todoListReducer,[
+    let [todoLists, dispatchTodoLists] = useReducer(todoListReducer, [
         {id: todolistId1, title: "What to learn", filter: "all"},
         {id: todolistId2, title: "What to buy", filter: "all"}
     ])
@@ -97,9 +99,9 @@ function App() {
         dispatchTodoLists(changeFilterAC(id, filter))
     }
 
-    function addTodoList  (title: string) {
+    function addTodoList(title: string) {
         const id = v1() //! верный ли вариант создавать здесь айдишку
-        dispatchTodoLists(addNewTodoListAC(id,title))
+        dispatchTodoLists(addNewTodoListAC(id, title))
         dispatchTasks(addNewTasksArrayAC(id))
     }// ID
     function updateTitle(id: string, newTitle: string) {
@@ -108,36 +110,41 @@ function App() {
 
     return (
         <div className="App">
-            <AddTaskItem onClick={addTodoList} placeholder='Add new todolist'/>
-            {
-                todoLists.map(tl => {
-                    let allTodolistTasks = tasks[tl.id];
-                    let tasksForTodolist = allTodolistTasks;
+            <Container fixed>
+                <AddTaskItem onClick={addTodoList} placeholder='Add new todolist'/>
+                <Grid container spacing={2}>
+                    {
+                        todoLists.map(tl => {
+                            let allTodolistTasks = tasks[tl.id];
+                            let tasksForTodolist = allTodolistTasks;
 
-                    if (tl.filter === "active") {
-                        tasksForTodolist = allTodolistTasks.filter(t => !t.isDone);
+                            if (tl.filter === "active") {
+                                tasksForTodolist = allTodolistTasks.filter(t => !t.isDone);
+                            }
+                            if (tl.filter === "completed") {
+                                tasksForTodolist = allTodolistTasks.filter(t => t.isDone);
+                            }
+
+                            return <Grid item>
+                                <Todolist
+                                    key={tl.id}
+                                    id={tl.id}
+                                    title={tl.title}
+                                    tasks={tasksForTodolist}
+                                    removeTask={removeTask}
+                                    changeFilter={changeFilter}
+                                    addTask={addTask}
+                                    changeTaskStatus={changeStatus}
+                                    filter={tl.filter}
+                                    removeTodolist={removeTodolist}
+                                    updateTask={updateTask}
+                                    updateTitle={updateTitle}
+                                />
+                            </Grid>
+                        })
                     }
-                    if (tl.filter === "completed") {
-                        tasksForTodolist = allTodolistTasks.filter(t => t.isDone);
-                    }
-
-                    return <Todolist
-                        key={tl.id}
-                        id={tl.id}
-                        title={tl.title}
-                        tasks={tasksForTodolist}
-                        removeTask={removeTask}
-                        changeFilter={changeFilter}
-                        addTask={addTask}
-                        changeTaskStatus={changeStatus}
-                        filter={tl.filter}
-                        removeTodolist={removeTodolist}
-                        updateTask={updateTask}
-                        updateTitle={updateTitle}
-                    />
-                })
-            }
-
+                </Grid>
+            </Container>
         </div>
     );
 }
