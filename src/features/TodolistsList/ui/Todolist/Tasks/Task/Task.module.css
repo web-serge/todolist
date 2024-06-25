@@ -1,0 +1,32 @@
+.isDone {
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
+.task {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px lightgray;
+
+    color: grey;
+}
+
+.addedDate {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-right: 2px solid #8080804a;
+    padding: 0 5px;
+    min-width: 38px;
+    font-weight: bold;
+}
+
+.main {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
