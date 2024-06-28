@@ -14,15 +14,6 @@ export type TaskType = {
   addedDate: string;
 };
 
-export type UpdateTaskModelType = {
-  title: string;
-  description: string;
-  status: TaskStatuses;
-  priority: TaskPriorities;
-  startDate: string;
-  deadline: string;
-};
-
 export type GetTasksResponse = {
   error: string | null;
   totalCount: number;
@@ -44,3 +35,5 @@ export type RemoveTaskArgType = {
   todolistId: string;
   taskId: string;
 };
+
+export type reorderArg = RemoveTaskArgType & {putAfterItemId: string | null}

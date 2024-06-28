@@ -1,45 +1,34 @@
 import { Button, Checkbox, IconButton, TextField } from "@mui/material";
 import { EditableSpan, Modal } from "common/components";
-import { TaskStatuses } from "common/enums";
-import React, { ChangeEvent, useState } from "react";
-import { useActions } from "common/hooks";
+import React, { HTMLAttributes } from "react";
 import s from "./Task.module.css";
 import EditNoteSharpIcon from "@mui/icons-material/EditNoteSharp";
 import DeleteOutlineSharpIcon from "@mui/icons-material/DeleteOutlineSharp";
 import CheckSharpIcon from "@mui/icons-material/CheckSharp";
-import { TaskType } from "features/TodolistsList/api/tasksApi.types";
-import { tasksThunks } from "features/TodolistsList/model/tasks.slice";
-import { getDate } from "common/utils/getDate";
+import { TaskType } from "features/TodolistsList/api/tasks.api.types";
+import { useTask } from "features/TodolistsList/ui/Todolist/Tasks/Task/useTasksForm";
 
 type Props = {
   task: TaskType
-}
+} & HTMLAttributes<HTMLDivElement>
 
-export const Task = ({ task }: Props) => {
-  const { id: taskId, todoListId: todolistId, title } = task;
-  const [isVisible, setIsVisible] = useState(false);
-  const { removeTask, updateTask } = useActions(tasksThunks);
+export const Task = ({ task, ...restProps }: Props) => {
 
-  const removeTaskHandler = () => {
-    removeTask({ taskId, todolistId });
-  };
-
-  const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const status = e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New;
-    updateTask({ taskId, domainModel: { status }, todolistId });
-  };
-
-  const changeTaskTitleHandler = (title: string) => {
-    if (task.title === title) return;
-    updateTask({ taskId, domainModel: { title }, todolistId });
-  };
-
-  const isTaskCompleted = task.status === TaskStatuses.Completed;
-  const { dayOfWeek, day, month } = getDate(task.addedDate);
-
+  const {
+    formik,
+    isVisible,
+    isTitleError,
+    title,
+    day,
+    dayOfWeek,
+    month,
+    isTaskCompleted,
+    changeTaskTitleHandler,
+    changeTaskStatusHandler, removeTaskHandler, setIsVisible
+  } = useTask(task);
 
   return (
-    <div className={s.task}>
+    <div className={s.task} {...restProps} id={task.id}>
       <div className={s.addedDate}>
         <small>{dayOfWeek}</small>
         <small style={{ color: "blue" }}>{month}</small>
@@ -54,23 +43,48 @@ export const Task = ({ task }: Props) => {
           <IconButton onClick={() => setIsVisible(true)} title={"Edit task"}>
             <EditNoteSharpIcon />
           </IconButton>
-          <IconButton onClick={removeTaskHandler} title={"Remove task"} color={'warning'}>
+          <IconButton onClick={removeTaskHandler} title={"Remove task"} color={"warning"}>
             <DeleteOutlineSharpIcon />
           </IconButton>
-        </div >
+        </div>
       </div>
+
       <Modal isVisible={isVisible} onClose={setIsVisible}>
-        <form>
+        <form style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          maxWidth: "1000px",
+          width: "100%",
+          minWidth: "320px"
+        }} onSubmit={formik.handleSubmit}>
           <h3>Edit task</h3>
-          <div>
-            <TextField value={task.title} />
-          </div>
-          <Button onClick={() => {
-          }} endIcon={<CheckSharpIcon />}>
+          <TextField label={(isTitleError && formik.errors.title) || "Title*"}
+                     {...formik.getFieldProps("title")}
+                     color={(isTitleError && "error") || "primary"}
+          />
+          <label>
+            <small><b>Deadline: </b></small>
+            <br />
+            <input type="date" {...formik.getFieldProps("deadline")} />
+          </label>
+
+          <label>
+            <small><b>Description: </b></small>
+            <br />
+            <textarea style={{ minHeight: "200px", resize: "none", width:'100%', borderRadius:'10px' }}
+                      {...formik.getFieldProps("description")} />
+          </label>
+          <Button
+            type={"submit"}
+            variant={"contained"}
+            disabled={!(formik.isValid)}
+            endIcon={<CheckSharpIcon />}>
             Confirm
           </Button>
         </form>
       </Modal>
+
     </div>
   );
 };

@@ -21,10 +21,8 @@ export const Todolist = ({ todolist }: Props) => {
   const addTaskCb = (title: string) => {
     return addTask({ title, todolistId: todolist.id });
   };
-  console.log(todolist);
   return (
-    <div style={{ cursor: "grab" }}
-    >
+    <div>
       <TodolistTitle todolist={todolist} />
       <AddItemForm addItem={addTaskCb} disabled={todolist.entityStatus === "loading"} placeholder="Add task" />
       <Tasks todolist={todolist} />

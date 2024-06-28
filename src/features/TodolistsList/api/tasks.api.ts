@@ -1,6 +1,6 @@
 import { instance } from "common/api"
 import { BaseResponseType } from "common/types"
-import { AddTaskArgType, GetTasksResponse, RemoveTaskArgType, TaskType } from "./tasksApi.types"
+import { AddTaskArgType, GetTasksResponse, RemoveTaskArgType, reorderArg, TaskType } from "features/TodolistsList/api/tasks.api.types";
 
 export const tasksApi = {
   getTasks(todolistId: string) {
@@ -19,4 +19,7 @@ export const tasksApi = {
   updateTask(todolistId: string, taskId: string, model: Partial<TaskType>) {
     return instance.put<BaseResponseType<TaskType>>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
   },
+  reorderTask({taskId, putAfterItemId, todolistId}: reorderArg) {
+    return instance.put(`todo-lists/${todolistId}/tasks/${taskId}/reorder`, {putAfterItemId})
+  }
 }

@@ -7,7 +7,7 @@ import {
 } from "features/TodolistsList/model/todolists.slice"
 import { v1 } from "uuid"
 import { RequestStatusType } from "app/app.slice"
-import { TodolistType } from "../../api/todolistsApi"
+import { TodolistType } from "features/TodolistsList/api/todolists.api.types";
 
 let todolistId1: string
 let todolistId2: string
@@ -22,6 +22,23 @@ beforeEach(() => {
   ]
 })
 
+test("correct todolist should be added", () => {
+  const todolist: TodolistType = {
+    title: "New Todolist",
+    id: "any id",
+    addedDate: "",
+    order: 0
+  }
+
+  const endState = todolistsReducer(
+    startState,
+    todolistsThunks.addTodolist.fulfilled({ todolist }, "requestId", todolist.title),
+  )
+  expect(endState.length).toBe(3)
+  expect(endState[0].title).toBe(todolist.title)
+  expect(endState[0].filter).toBe("all")
+})
+
 test("correct todolist should be removed", () => {
   const endState = todolistsReducer(
     startState,
@@ -30,24 +47,6 @@ test("correct todolist should be removed", () => {
 
   expect(endState.length).toBe(1)
   expect(endState[0].id).toBe(todolistId2)
-})
-
-test("correct todolist should be added", () => {
-  let todolist: TodolistType = {
-    title: "New Todolist",
-    id: "any id",
-    addedDate: "",
-    order: 0,
-  }
-
-  const endState = todolistsReducer(
-    startState,
-    todolistsThunks.addTodolist.fulfilled({ todolist }, "requestId", todolist.title),
-  )
-
-  expect(endState.length).toBe(3)
-  expect(endState[0].title).toBe(todolist.title)
-  expect(endState[0].filter).toBe("all")
 })
 
 test("correct todolist should change its name", () => {

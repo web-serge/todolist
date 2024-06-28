@@ -8,6 +8,7 @@ type Props = {
   onClose: (isVisible: boolean) => void
 }
 export const Modal = ({ children, isVisible, onClose }: Props): React.ReactPortal | null => {
+
   // @ts-ignore
   return createPortal(isVisible && <div className={s.overlay} onClick={() => onClose(false)}>
     <div className={s.modal} onClick={(e) => e.stopPropagation()}>

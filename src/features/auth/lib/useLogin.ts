@@ -9,7 +9,6 @@ type FormikErrorType = Omit<Partial<LoginParamsType>, "captcha">;
 
 export const useLogin = () => {
   const { login } = useActions(authThunks);
-
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const formik = useFormik({
@@ -32,7 +31,7 @@ export const useLogin = () => {
     initialValues: {
       email: "",
       password: "",
-      rememberMe: false,
+      rememberMe: false
     },
     onSubmit: (values, formikHelpers: FormikHelpers<LoginParamsType>) => {
       login(values)
@@ -42,7 +41,7 @@ export const useLogin = () => {
             formikHelpers.setFieldError(fieldError.field, fieldError.error);
           });
         });
-    },
+    }
   });
 
   return { formik, isLoggedIn };

@@ -26,6 +26,6 @@ export const EditableSpan = React.memo(({value, className, onChange}: EditableSp
   return editMode ? (
     <TextField value={title} onChange={changeTitle} autoFocus onBlur={activateViewMode}  variant={'standard'}/>
   ) : (
-    <span onDoubleClick={activateEditMode} className={className}>{value}</span>
+    <span onDoubleClick={activateEditMode} className={className} style={{position: 'relative', zIndex: '10', cursor: 'pointer'}} title='Double click to edit'>{value}</span>
   );
 });

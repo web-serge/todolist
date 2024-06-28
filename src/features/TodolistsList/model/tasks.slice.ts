@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
 import { appActions } from "app/app.slice";
 import { todolistsThunks } from "features/TodolistsList/model/todolists.slice";
 import { createAppAsyncThunk, handleServerAppError, thunkTryCatch } from "common/utils";
 import { ResultCode, TaskPriorities, TaskStatuses } from "common/enums";
 import { clearTasksAndTodolists } from "common/actions";
-import { tasksApi } from "../api/tasksApi";
-import { AddTaskArgType, RemoveTaskArgType, TaskType, UpdateTaskArgType } from "../api/tasksApi.types";
+import { tasksApi } from "features/TodolistsList/api/tasks.api";
+import { AddTaskArgType, RemoveTaskArgType, reorderArg, TaskType, UpdateTaskArgType } from "features/TodolistsList/api/tasks.api.types";
 
 const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[]; todolistId: string }, string>(
   "tasks/fetchTasks",
@@ -74,6 +74,21 @@ const removeTask = createAppAsyncThunk<RemoveTaskArgType, RemoveTaskArgType>(
     })
   },
 )
+const drag = createAppAsyncThunk<any, reorderArg>(
+  "tasks/drag",
+  async (arg, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI
+    return thunkTryCatch(thunkAPI, async () => {
+      const res = await tasksApi.reorderTask(arg)
+      if (res.data.resultCode === ResultCode.Success) {
+        return arg
+      } else {
+        handleServerAppError(res.data, dispatch)
+        return rejectWithValue(null)
+      }
+    })
+  },
+)
 
 const initialState: TasksStateType = {}
 
@@ -116,6 +131,9 @@ const slice = createSlice({
       .addCase(clearTasksAndTodolists, () => {
         return {}
       })
+      .addCase(drag.fulfilled, (state) => {
+        return state
+      })
   },
   selectors: {
     selectTasks: state => state
@@ -124,7 +142,7 @@ const slice = createSlice({
 
 export const tasksReducer = slice.reducer
 export const {selectTasks} = slice.selectors
-export const tasksThunks = { fetchTasks, addTask, updateTask, removeTask }
+export const tasksThunks = { fetchTasks, addTask, updateTask, removeTask, drag }
 
 export type UpdateDomainTaskModelType = {
   title?: string

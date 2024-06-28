@@ -3,8 +3,8 @@ import { RequestStatusType } from "app/app.slice";
 import { clearTasksAndTodolists } from "common/actions";
 import { ResultCode } from "common/enums";
 import { createAppAsyncThunk, handleServerAppError, thunkTryCatch } from "common/utils";
-import { todolistsApi } from "features/TodolistsList/api/todolistsApi";
-import { TodolistType, UpdateTodolistTitleArgType } from "../api/todolistsApi.types";
+import { todolistsApi } from "features/TodolistsList/api/todolists.api";
+import { TodolistType, UpdateTodolistTitleArgType } from "features/TodolistsList/api/todolists.api.types";
 
 const fetchTodolists = createAppAsyncThunk<{ todolists: TodolistType[] }, void>(
   "todolists/fetchTodolists",
@@ -74,7 +74,7 @@ const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTodolists.fulfilled, (state, action) => {
+      .addCase(fetchTodolists.fulfilled, (_, action) => {
         return action.payload.todolists.map((tl) => ({ ...tl, filter: "all", entityStatus: "idle" }))
       })
       .addCase(addTodolist.fulfilled, (state, action) => {
@@ -83,11 +83,7 @@ const slice = createSlice({
           filter: "all",
           entityStatus: "idle",
         }
-        state.push(newTodolist)
-      })
-      .addCase(removeTodolist.fulfilled, (state, action) => {
-        const index = state.findIndex((todo) => todo.id === action.payload.id)
-        if (index !== -1) state.splice(index, 1)
+        state.unshift(newTodolist)
       })
       .addCase(changeTodolistTitle.fulfilled, (state, action) => {
         const todo = state.find((todo) => todo.id === action.payload.id)
@@ -97,6 +93,10 @@ const slice = createSlice({
       })
       .addCase(clearTasksAndTodolists, () => {
         return []
+      })
+      .addCase(removeTodolist.fulfilled, (state, action) => {
+        const index = state.findIndex((todo) => todo.id === action.payload.id)
+        if (index !== -1) state.splice(index, 1)
       })
       .addMatcher(isRejected(todolistsThunks.removeTodolist), (state, action) => {
         const todo = state.find((todo) => todo.id === action.meta.arg)
