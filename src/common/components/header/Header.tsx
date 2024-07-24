@@ -16,7 +16,7 @@ export const Header = () => {
 
   return (
     <header className={s.header}>
-      <div className={s.container}>
+      <div className={s.container} style={{display:'flex', alignItems:'center'}}>
         <img src={logo} alt="logo" />
         {isLoggedIn ? (
           <Button color={'inherit'} variant={'outlined'} onClick={logoutHandler} endIcon={<LogoutSharpIcon />}>
